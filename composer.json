@@ -1,0 +1,16 @@
+{
+    "name": "sarav/laravel-multi",
+    "description": "A Simple Laravel Package for handling multiple authentication",
+    "type": "Library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sarav",
+            "email": "me@sarav.co"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9"
+    }
+}
