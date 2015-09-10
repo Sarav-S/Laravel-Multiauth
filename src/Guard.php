@@ -4,6 +4,9 @@ namespace Sarav\Multiauth;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Guard as OriginalGuard;
+use Illuminate\Contracts\Auth\UserProvider;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface as SessionStore;
 
 class Guard extends OriginalGuard {
 
