@@ -197,6 +197,11 @@ abstract class Manager
         return call_user_func_array([$this->driver(), $method], $parameters);
     }
 
+    /**
+     * This initiallzes the default config setting
+     * 
+     * @param array $config
+     */
     public function setDefaultConfig($config = []) {
 
         if( !count($config) ) $config = $this->app['config']['auth.multi'];
