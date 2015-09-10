@@ -1,7 +1,8 @@
 {
-    "name": "sarav/laravel-multi",
+    "name": "sarav/laravel-multiauth",
     "description": "A Simple Laravel Package for handling multiple authentication",
     "type": "Library",
+    "keywords" : ["laravel", "multiauth", "authentication"],
     "license": "MIT",
     "authors": [
         {
