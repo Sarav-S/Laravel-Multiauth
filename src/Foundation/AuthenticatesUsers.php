@@ -22,19 +22,21 @@ trait AuthenticatesUsers
         return $this->user;
     }
 
+    /**
+     * Checks User has been set or not. If not throw an exception
+     * @return [type] [description]
+     */
     public function checkUser() {
 
-        if ($this->user === null) {
-
-            $this->user = \Request::segment(1);
-
-            $app = app();
-
-            if (!array_key_exists($this->user, $app->config['auth.multi'])) {
-                throw new \InvalidArgumentException('Undefined property '.$this->user);
-            }
+        if (!$this->user) {
+            throw new \InvalidArgumentException('User parameter is empty');
         }
+        
+        $app = app();
 
+        if (!array_key_exists($this->user, $app->config['auth.multi'])) {
+            throw new \InvalidArgumentException('Undefined property '.$this->user);
+        }
     }
 
     /**
