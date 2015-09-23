@@ -15,6 +15,11 @@ trait AuthenticatesUsers
 
     protected $user = null;
 
+    /**
+     * Returns the type of user
+     * 
+     * @return string
+     */
     protected function user() { 
 
         $this->checkUser();
@@ -22,16 +27,20 @@ trait AuthenticatesUsers
         return $this->user;
     }
 
+    /**
+     * Checks User has been set or not. If not throw an exception
+     * @return null
+     */
     public function checkUser() {
 
         if (!$this->user) {
-            throw new \InvalidArgumentException('User parameter is empty');
+            throw new \InvalidArgumentException('First parameter should not be empty');
         }
 
         $app = app();
 
         if (!array_key_exists($this->user, $app->config['auth.multi'])) {
-            throw new \InvalidArgumentException('Undefined property '.$this->user);
+            throw new \InvalidArgumentException('Undefined property '.$this->user.' not found in auth.php multi array');
         }
 
     }
