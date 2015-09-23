@@ -22,21 +22,18 @@ trait AuthenticatesUsers
         return $this->user;
     }
 
-    /**
-     * Checks User has been set or not. If not throw an exception
-     * @return [type] [description]
-     */
     public function checkUser() {
 
         if (!$this->user) {
             throw new \InvalidArgumentException('User parameter is empty');
         }
-        
+
         $app = app();
 
         if (!array_key_exists($this->user, $app->config['auth.multi'])) {
             throw new \InvalidArgumentException('Undefined property '.$this->user);
         }
+
     }
 
     /**
@@ -77,10 +74,6 @@ trait AuthenticatesUsers
 
         $credentials = $this->getCredentials($request);
 
-        if (Auth::attempt('admin', $credentials, $request->has('remember'))) {
-        	
-        }
-
         if (Auth::attempt($this->user(), $credentials, $request->has('remember'))) {
             return $this->handleUserWasAuthenticated($request, $throttles);
         }
@@ -92,11 +85,19 @@ trait AuthenticatesUsers
             $this->incrementLoginAttempts($request);
         }
 
-        return redirect($this->loginPath())
-            ->withInput($request->only($this->loginUsername(), 'remember'))
-            ->withErrors([
-                $this->loginUsername() => $this->getFailedLoginMessage(),
-            ]);
+        if ($redirectUrl = $this->loginPath()) {
+            return redirect($redirectUrl)
+                ->withInput($request->only($this->loginUsername(), 'remember'))
+                ->withErrors([
+                    $this->loginUsername() => $this->getFailedLoginMessage(),
+                ]);
+        } else {
+            return back()
+                ->withInput($request->only($this->loginUsername(), 'remember'))
+                ->withErrors([
+                    $this->loginUsername() => $this->getFailedLoginMessage(),
+                ]);
+        }
     }
 
     /**
@@ -161,7 +162,7 @@ trait AuthenticatesUsers
      */
     public function loginPath()
     {
-        return property_exists($this, 'loginPath') ? $this->loginPath : '/'.$this->user().'/login';
+        return property_exists($this, 'loginPath') ? $this->loginPath : null;
     }
 
     /**

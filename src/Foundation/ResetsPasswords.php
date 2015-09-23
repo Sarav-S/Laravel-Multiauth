@@ -18,11 +18,25 @@ trait ResetsPasswords
      * 
      * @return string
      */
-    protected function user() {
+    protected function user() { 
 
-        if ($this->user === null) throw new \InvalidArgumentException('Undefined property '.$this->user);
+        $this->checkUser();
+        
+        return $this->user;
+    }
 
-        return ($this->user) ?: "user";
+    public function checkUser() {
+
+        if (!$this->user) {
+            throw new \InvalidArgumentException('User parameter is empty');
+        }
+
+        $app = app();
+
+        if (!array_key_exists($this->user, $app->config['auth.multi'])) {
+            throw new \InvalidArgumentException('Undefined property '.$this->user);
+        }
+
     }
 
     /**
