@@ -57,6 +57,6 @@ We are done! Now you can simply login user/admin like the following code
 
 Simply pass the first parameter as key which you have configured in auth.php to perform authentication for either user or admin.
 
-Thats it. Thats all needed for integrating multiple authentication in laravel. However if you like to use laravel's default login, forgot password and reset functionality, check out my next blog <a href="http://sarav.co/blog/multiple-authentication-in-laravel-5-1-continued/" target="_blank">multiple authentication in laravel continued</a>.
+For more information <a href="http://sarav.co/blog/multiple-authentication-in-laravel-5-1-continued/" target="_blank">check out this article</a>.
 
 
