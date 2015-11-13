@@ -10,7 +10,7 @@ A Simple Laravel Package for handling multiple authentication
 
 Open your terminal and navigate to your laravel folder. Now run the following command
 
-	composer require sarav/laravel-multiauth dev-master
+	composer require sarav/laravel-multiauth
 
 
 ##Step 2 : Replacing default auth service provider##
@@ -19,7 +19,7 @@ Open your terminal and navigate to your laravel folder. Now run the following co
 Replace 
 	"Illuminate\Auth\AuthServiceProvider::class"
 with 
-    "Sarav\Multiauth\MultiauthServiceProvider"
+    "Sarav\Multiauth\MultiauthServiceProvider::class"
 
 ##Step 3 : Modify auth.php##
 
