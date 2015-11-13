@@ -1,5 +1,5 @@
 # Laravel-Multiauth
-
+[![License](https://poser.pugx.org/ollieread/multiauth/license.png)](https://packagist.org/packages/ollieread/multiauth)
 A Simple Laravel Package for handling multiple authentication
 
 - **Laravel**: 5.1.*
