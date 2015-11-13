@@ -9,6 +9,13 @@ use Illuminate\Auth\EloquentUserProvider;
 
 class AuthManager extends Manager
 {
+    /**
+     * Holds the Guard instance
+     * 
+     * @var array
+     */
+    protected $driver = [];
+
     public function __construct($app) {
         parent::__construct($app);
     }
@@ -70,7 +77,7 @@ class AuthManager extends Manager
      */
     public function createDatabaseDriver() {
         $provider = $this->createDatabaseProvider();
-        return new Guard($provider, $this->app['session.store'], $this->name);
+        return $this->provideGuardAccess($provider, $this->app['session.store'], $this->name);
     }
     
     /**
@@ -91,7 +98,7 @@ class AuthManager extends Manager
      */
     public function createEloquentDriver() {
         $provider = $this->createEloquentProvider();
-        return new Guard($provider, $this->app['session.store'], $this->name);
+        return $this->provideGuardAccess($provider, $this->app['session.store'], $this->name);
     }
     
      /**
@@ -101,10 +108,23 @@ class AuthManager extends Manager
      */
     protected function createEloquentProvider() {
         $model = $this->config['model'];
-        
         return new EloquentUserProvider($this->app['hash'], $model);
     }
-    
+        
+    /**
+     * Returns the instance of Guard Class
+     * 
+     * @return Sarav\Multiauth\Guard
+     */
+    protected function provideGuardAccess() {
+
+        if(!array_key_exists($name, $this->driver)) {
+            $this->driver[$name] = new Guard($provider, $session, $name);
+        }
+
+        return $this->driver[$name];
+    }
+
      /**
      * Set the default authentication driver name.
      *
