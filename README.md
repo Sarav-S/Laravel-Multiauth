@@ -1,5 +1,8 @@
 # Laravel-Multiauth
-[![License](https://poser.pugx.org/ollieread/multiauth/license.png)](https://packagist.org/packages/ollieread/multiauth)
+[![Latest Stable Version](https://poser.pugx.org/sarav/laravel-multiauth/v/stable)](https://packagist.org/packages/sarav/laravel-multiauth) [![Total Downloads](https://poser.pugx.org/sarav/laravel-multiauth/downloads)](https://packagist.org/packages/sarav/laravel-multiauth) [![Latest Unstable Version](https://poser.pugx.org/sarav/laravel-multiauth/v/unstable)](https://packagist.org/packages/sarav/laravel-multiauth) [![License](https://poser.pugx.org/sarav/laravel-multiauth/license)](https://packagist.org/packages/sarav/laravel-multiauth)
+
+
+
 A Simple Laravel Package for handling multiple authentication
 
 - **Laravel**: 5.1.*
