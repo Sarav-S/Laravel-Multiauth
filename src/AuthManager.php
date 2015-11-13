@@ -116,7 +116,7 @@ class AuthManager extends Manager
      * 
      * @return Sarav\Multiauth\Guard
      */
-    protected function provideGuardAccess() {
+    protected function provideGuardAccess($provider, $session, $name) {
 
         if(!array_key_exists($name, $this->driver)) {
             $this->driver[$name] = new Guard($provider, $session, $name);
