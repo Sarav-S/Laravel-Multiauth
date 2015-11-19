@@ -15,6 +15,12 @@ Open your terminal and navigate to your laravel folder. Now run the following co
 
 	composer require sarav/laravel-multiauth
 
+or 
+
+    "require": {
+        "sarav/laravel-multiauth": "^0.0.2"
+    }
+
 
 ##Step 2 : Replacing default auth service provider##
 
