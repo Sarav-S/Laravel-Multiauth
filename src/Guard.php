@@ -20,32 +20,41 @@ class Guard extends OriginalGuard {
      * @param  \Symfony\Component\HttpFoundation\Request  $request
      * @return void
      */
-    public function __construct(UserProvider $provider, SessionStore $session, $name, Request $request = null) {
-
-        parent::__construct($provider, $session, $request);
-
+    public function __construct(UserProvider $provider, SessionStore $session, $name, Request $request = null)
+    {
         $this->name = $name;
+        parent::__construct($provider, $session, $request);
     }
-    
+
     /**
      * Get a unique identifier for the auth session value.
      *
      * @return string
      */
-    public function getName() {
-
+    public function getName()
+    {
         return 'login_' . $this->name . '_' . md5(get_class($this));
-
     }
-    
+
     /**
      * Get the name of the cookie used to store the "recaller".
      *
      * @return string
      */
-    public function getRecallerName() {
-
+    public function getRecallerName()
+    {
         return 'remember_' . $this->name . '_' . md5(get_class($this));
+    }
 
+    /**
+     * Set current authentication type
+     *
+     * @param string
+     * @return \Sarav\Multiauth\Guard
+     */
+    public function with($name)
+    {
+      $this->name = $name;
+      return $this;
     }
 }
