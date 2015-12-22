@@ -66,6 +66,12 @@ We are done! Now you can simply login user/admin like the following code
 
 Simply pass the first parameter as key which you have configured in auth.php to perform authentication for either user or admin.
 
+##Improved Guard Class##
+
+Now you can pass Guard class easily through nice "with" function.
+
+    $auth = $auth->with('admin');
+
 For more information <a href="http://sarav.co/blog/multiple-authentication-in-laravel-5-1-continued/" target="_blank">check out this article</a>.
 
 
