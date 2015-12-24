@@ -65,8 +65,10 @@ trait ResetsPasswords
 
         $app = app();
 
-        view()->composer($app->config['auth.password.email'], function($view) {
-            $view->with('type', $this->user());
+        $class = str_ireplace('App\Http\Controllers\\', '', get_called_class());
+
+        view()->composer($app->config['auth.password.email'], function($view) use ($class) {
+            $view->with('action', $class.'@getReset');
         });
 
         $response = Password::sendResetLink($request->only('email'), function (Message $message) {
