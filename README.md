@@ -9,6 +9,8 @@ A Simple Laravel Package for handling multiple authentication
 - **Author**: Sarav
 - **Author Homepage**: http://sarav.co
 
+Check working sample code of this project <a href="https://github.com/Sarav-S/Laravel-Multiauth-SampleCode">here</a>
+
 ##Step 1 : Require Composer package##
 
 Open your terminal and navigate to your laravel folder. Now run the following command
