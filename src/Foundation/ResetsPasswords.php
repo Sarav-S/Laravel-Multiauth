@@ -7,21 +7,24 @@ use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Contracts\Auth\PasswordBroker as Broker;
+use Illuminate\Auth\Passwords\TokenRepositoryInterface;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 trait ResetsPasswords
-{   
+{
 
     protected $user = null;
 
     /**
      * Returns the type of user
-     * 
+     *
      * @return string
      */
-    protected function user() { 
+    protected function user() {
 
         $this->checkUser();
-        
+
         return $this->user;
     }
 
@@ -59,8 +62,9 @@ trait ResetsPasswords
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function postEmail(Request $request)
+    public function postEmail(Request $request, Broker $password, TokenRepositoryInterface $tokens)
     {
+
         $this->validate($request, ['email' => 'required|email']);
 
         $app = app();
@@ -71,17 +75,38 @@ trait ResetsPasswords
             $view->with('action', $class.'@getReset');
         });
 
-        $response = Password::sendResetLink($request->only('email'), function (Message $message) {
+        $user = $this->resolveUserBy($request->only('email'));
+        if ($user == null) {
+            return redirect()->back()->with('status', trans(Broker::INVALID_USER));
+        }
+
+        $token = $tokens->create($user);
+        $password->emailResetLink($user, $token, function (Message $message) {
             $message->subject($this->getEmailSubject());
         });
 
-        switch ($response) {
-            case Password::RESET_LINK_SENT:
-                return redirect()->back()->with('status', trans($response));
+        return redirect()->back()->with('status', trans(Broker::RESET_LINK_SENT));
 
-            case Password::INVALID_USER:
-                return redirect()->back()->withErrors(['email' => trans($response)]);
+    }
+
+    /**
+     * Use the specified user provider to look for an existing user record
+     *
+     * @param  string $email
+     * @return \Illuminate\Contracts\Auth\CanResetPassword
+     *
+     * @throws \UnexpectedValueException
+     */
+    protected function resolveUserBy($email)
+    {
+        $model = app()->config['auth.multi.' . $this->user . '.model'];
+        $class = '\\'.ltrim($model, '\\');
+        $obj = new $class;
+        $user = $obj->newQuery()->where('email', $email)->first();
+        if ($user && ! $user instanceof CanResetPasswordContract) {
+            throw new \UnexpectedValueException('User must implement CanResetPassword interface.');
         }
+        return $user;
     }
 
     /**
@@ -115,7 +140,7 @@ trait ResetsPasswords
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function postReset(Request $request)
+    public function postReset(Request $request, Broker $password, TokenRepositoryInterface $tokens)
     {
         $this->validate($request, [
             'token'    => 'required',
@@ -127,21 +152,40 @@ trait ResetsPasswords
             'email', 'password', 'password_confirmation', 'token'
         );
 
+        $email = $request['email'];
 
-
-        $response = Password::reset($credentials, function ($user, $password) {
-            $this->resetPassword($user, $password);
-        });
-
-        switch ($response) {
-            case Password::PASSWORD_RESET:
-                return redirect($this->redirectPath());
-
-            default:
-                return redirect()->back()
-                            ->withInput($request->only('email'))
-                            ->withErrors(['email' => trans($response)]);
+        $user = $this->resolveUserBy($email);
+        if ($user == null) {
+            return $this->redirectWith($email, Broker::INVALID_USER);
         }
+
+
+        if (! $password->validateNewPassword($credentials)) {
+            return $this->redirectWith($email, Broker::INVALID_PASSWORD);
+        }
+
+        if (! $tokens->exists($user, $credentials['token'])) {
+            return $this->redirectWith($email, Broker::INVALID_TOKEN);
+        }
+
+        $this->resetPassword($user, $credentials['password']);
+        $tokens->delete($credentials['token']);
+
+        return redirect($this->redirectPath());
+    }
+
+    /**
+     * Utility function to respond to the reset password form
+     *
+     * @param  string $email
+     * @param  string $response message translation key
+     * @return \Illuminate\Http\Response
+     */
+    protected function redirectWith($email, $response)
+    {
+        return redirect()->back()
+                        ->withInput(['email' => $email])
+                        ->withErrors(['email' => trans($response)]);
     }
 
     /**
