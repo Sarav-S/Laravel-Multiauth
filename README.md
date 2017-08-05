@@ -20,7 +20,7 @@ Open your terminal and navigate to your laravel folder. Now run the following co
 or 
 
     "require": {
-        "sarav/laravel-multiauth": "^0.0.5"
+        "sarav/laravel-multiauth": "^0.0.7"
     }
 
 
